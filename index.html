@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diseño adaptable · Tu web en móvil, tableta y ordenador</title>
+  <meta name="description" content="Cómo hacer una página web con HTML, CSS y JavaScript que se vea bien en celulares y computadoras: explicación, demos interactivas y código.">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+  <!-- ================= CABECERA ================= -->
+  <header class="cabecera">
+    <a class="logo" href="#inicio">📐 <span>Diseño adaptable</span></a>
+
+    <button class="menu-boton" id="menuBoton" aria-expanded="false" aria-controls="nav">
+      <span aria-hidden="true">☰</span>
+      <span class="solo-lectores">Abrir menú</span>
+    </button>
+
+    <nav class="nav" id="nav">
+      <a href="#idea">La idea</a>
+      <a href="#simulador">Simulador</a>
+      <a href="#media-queries">Media queries</a>
+      <a href="#unidades">Unidades</a>
+      <a href="#imagenes">Imágenes</a>
+      <a href="#toque">Toque</a>
+      <a href="#probar">Probar</a>
+      <a href="#chuleta">Chuleta</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ================= PORTADA ================= -->
+    <section class="hero" id="inicio">
+      <p class="etiqueta">HTML + CSS + JavaScript · tutorial con demos</p>
+      <h1>Que tu web se vea bien en el móvil <em>y</em> en el ordenador</h1>
+      <p class="entrada">
+        Una misma página tiene que caber en una pantalla de 320 píxeles y aprovechar una de 1600.
+        Eso se llama <strong>diseño adaptable</strong> (responsive) y se hace con tres piezas: el
+        <code>meta viewport</code>, las <strong>media queries</strong> y un maquetado
+        <strong>flexible</strong>. Aquí lo ves explicado y funcionando.
+      </p>
+
+      <div class="medidor" aria-live="polite">
+        <div class="medidor-dato">
+          <span class="medidor-num" id="anchoReal">—</span>
+          <span class="medidor-unidad">px de ancho</span>
+        </div>
+        <div class="medidor-modo" id="modoReal">calculando…</div>
+        <p class="medidor-nota">Esto mide <strong>tu ventana ahora mismo</strong>. Estrecha el navegador (o gira el móvil) y mira cómo cambia.</p>
+      </div>
+    </section>
+
+    <!-- ================= 1. LA IDEA ================= -->
+    <section class="bloque" id="idea">
+      <h2><span class="num">1</span> La idea en tres piezas</h2>
+      <p>
+        El móvil no es «un ordenador pequeño»: es otra pantalla, con otro ancho, otro dedo y a veces
+        sin ratón. Para que la web funcione en las dos hay que dejar de pensar en píxeles fijos y
+        pensar en reglas.
+      </p>
+
+      <div class="pilares">
+        <article class="pilar">
+          <h3>1 · Que el móvil no haga zoom</h3>
+          <p>Una línea en el <code>&lt;head&gt;</code> le dice al móvil «usa el ancho real de la pantalla».</p>
+          <pre class="codigo"><code>&lt;meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0"&gt;</code></pre>
+        </article>
+
+        <article class="pilar">
+          <h3>2 · Que el CSS pregunte</h3>
+          <p>Las <strong>media queries</strong> aplican estilos solo si la pantalla mide más o menos de X.</p>
+          <pre class="codigo"><code>@media (min-width: 640px) {
+  .rejilla { grid-template-columns:
+             repeat(2, 1fr); }
+}</code></pre>
+        </article>
+
+        <article class="pilar">
+          <h3>3 · Que nada tenga ancho fijo</h3>
+          <p>Flecos, rejillas y textos en <code>%</code>, <code>rem</code> y <code>fr</code>: se adaptan solos.</p>
+          <pre class="codigo"><code>.rejilla {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+}</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= 2. SIMULADOR ================= -->
+    <section class="bloque" id="simulador">
+      <h2><span class="num">2</span> Simulador: la misma web en todos los tamaños</h2>
+      <p>
+        Aquí abajo hay <strong>una web de verdad dentro de un marco</strong>. Mueve el mando y cambia
+        su ancho: las media queries de dentro se disparan igual que en un móvil real. Mira la barra de
+        navegación, el número de columnas y el texto.
+      </p>
+
+      <div class="simulador">
+        <div class="simulador-cab">
+          <div class="fila-presets" role="group" aria-label="Tamaños de pantalla">
+            <button class="preset" data-ancho="375" type="button">📱 Móvil · 375</button>
+            <button class="preset" data-ancho="768" type="button">📲 Tableta · 768</button>
+            <button class="preset" data-ancho="1024" type="button">💻 Portátil · 1024</button>
+          </div>
+
+          <label class="mando">
+            <span class="mando-texto">Ancho de la pantalla</span>
+            <input type="range" id="mandoAncho" min="320" max="1024" step="1" value="375">
+          </label>
+        </div>
+
+        <div class="simulador-estado">
+          <span class="pastilla" id="pastillaAncho">375 px</span>
+          <span class="pastilla modo" id="pastillaModo">Móvil</span>
+          <span class="pastilla regla" id="pastillaRegla">@media (max-width: 620px)</span>
+        </div>
+
+        <div class="marco-scroll">
+          <div class="marco" id="marco">
+            <iframe id="lienzo" title="Web de ejemplo dentro del simulador" class="lienzo"></iframe>
+          </div>
+        </div>
+        <p class="nota">Si tu pantalla es más estrecha que el marco, arrastra el marco hacia un lado para verlo completo.</p>
+      </div>
+
+      <h3>El CSS que hace esto</h3>
+      <p>Tres media queries, una detrás de otra. Se leen de arriba abajo y gana la última que se cumpla:</p>
+      <pre class="codigo con-copiar"><code id="codigoSimulador">/* móvil: una columna, menú ☰ */
+@media (max-width: 620px) {
+  .rejilla { grid-template-columns: 1fr; }
+  .menu { display: none; }
+  .burger { display: block; }
+}
+
+/* tableta: dos columnas */
+@media (min-width: 621px) {
+  .rejilla { grid-template-columns: 1fr 1fr; }
+}
+
+/* escritorio: tres columnas y barra lateral */
+@media (min-width: 901px) {
+  .rejilla { grid-template-columns: repeat(3, 1fr); }
+  .lateral { display: block; }
+}</code></pre>
+      <button class="copiar" data-copiar="codigoSimulador" type="button">📋 Copiar el CSS</button>
+    </section>
+
+    <!-- ================= 3. VIEWPORT ================= -->
+    <section class="bloque" id="viewport">
+      <h2><span class="num">3</span> El <code>meta viewport</code>, sin él no hay nada</h2>
+      <p>
+        Si te olvidas de esta línea, el móvil simula una pantalla de 980 píxeles y encoge la web para
+        que quepa: se ve todo diminuto y las media queries nunca se cumplen. Es el error número uno.
+      </p>
+      <pre class="codigo"><code>&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;Mi web&lt;/title&gt;
+&lt;/head&gt;</code></pre>
+      <ul class="lista">
+        <li><code>width=device-width</code>: el ancho de la página es el ancho físico de la pantalla.</li>
+        <li><code>initial-scale=1.0</code>: sin zoom inicial. La persona puede hacer zoom con los dedos; no se lo quites.</li>
+      </ul>
+      <p class="aviso-caja">
+        ⚠️ Nunca uses <code>user-scalable=no</code> ni <code>maximum-scale=1</code>: impiden ampliar y
+        dejan la página inutilizable para quien ve poco.
+      </p>
+    </section>
+
+    <!-- ================= 4. MEDIA QUERIES ================= -->
+    <section class="bloque" id="media-queries">
+      <h2><span class="num">4</span> Media queries: el CSS que pregunta</h2>
+      <p>
+        Una media query es un <code>if</code> de CSS: «si la pantalla mide al menos 640 píxeles, aplica
+        esto». Hay dos formas de escribirla y conviene elegir una:
+      </p>
+
+      <div class="comparativa">
+        <div class="comparativa-caja">
+          <h3>Mobile-first (recomendado)</h3>
+          <p>Escribes primero el móvil, sin media query, y vas <strong>añadiendo</strong> con <code>min-width</code>.</p>
+          <pre class="codigo"><code>.rejilla { grid-template-columns: 1fr; }
+
+@media (min-width: 640px) {
+  .rejilla { grid-template-columns: 1fr 1fr; }
+}</code></pre>
+          <p class="nota">Menos CSS, más fácil de mantener: el caso complicado (pantalla pequeña) es el que se escribe primero.</p>
+        </div>
+
+        <div class="comparativa-caja">
+          <h3>Desktop-first</h3>
+          <p>Escribes primero el ordenador y luego <strong>deshaces</strong> con <code>max-width</code>.</p>
+          <pre class="codigo"><code>.rejilla { grid-template-columns: repeat(3, 1fr); }
+
+@media (max-width: 639px) {
+  .rejilla { grid-template-columns: 1fr; }
+}</code></pre>
+          <p class="nota">Vale si la web ya existía, pero acabas con más excepciones.</p>
+        </div>
+      </div>
+
+      <h3>Y aquí está pasando de verdad</h3>
+      <p>
+        Esta tarjeta no usa JavaScript para cambiar: es CSS puro leyendo el ancho <strong>real</strong>
+        de tu ventana. Redimensiona el navegador y verás cómo cambia de color y de icono.
+      </p>
+
+      <div class="demo-real" id="demoReal">
+        <span class="demo-real-icono" aria-hidden="true"></span>
+        <div>
+          <strong id="demoRealTitulo">Modo escritorio</strong>
+          <p id="demoRealTexto">Ancho de sobra: el contenido va a lo ancho y con aire.</p>
+        </div>
+      </div>
+
+      <p class="nota">
+        El texto lo escribe CSS con <code>content</code> según el ancho. En un móvil real verías el
+        modo móvil sin tocar nada.
+      </p>
+
+      <h3>Preguntas que se pueden hacer</h3>
+      <div class="tabla-caja">
+        <table class="tabla">
+          <thead><tr><th>Pregunta</th><th>Para qué sirve</th></tr></thead>
+          <tbody>
+            <tr><td><code>(min-width: 640px)</code></td><td>Pantalla al menos de 640 px de ancho.</td></tr>
+            <tr><td><code>(orientation: landscape)</code></td><td>Móvil en horizontal.</td></tr>
+            <tr><td><code>(hover: none)</code></td><td>No hay ratón: no abuses de los efectos al pasar por encima.</td></tr>
+            <tr><td><code>(prefers-color-scheme: dark)</code></td><td>La persona usa el modo oscuro del sistema.</td></tr>
+            <tr><td><code>(prefers-reduced-motion: reduce)</code></td><td>Pide menos animaciones.</td></tr>
+            <tr><td><code>(max-height: 500px)</code></td><td>Pantallas bajas (móvil tumbado).</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= 5. UNIDADES ================= -->
+    <section class="bloque" id="unidades">
+      <h2><span class="num">5</span> Deja de medir en píxeles fijos</h2>
+      <p>
+        El <code>px</code> no se entera de nada: si el contenedor crece, el texto sigue igual. Las
+        unidades relativas sí. Mueve el mando y compara los tres párrafos, que tienen el mismo texto
+        pero distinta unidad.
+      </p>
+
+      <div class="demo-unidades">
+        <label class="mando">
+          <span class="mando-texto">Tamaño base del contenedor</span>
+          <input type="range" id="mandoFuente" min="12" max="26" step="1" value="16">
+        </label>
+
+        <div class="unidades-caja" id="cajaUnidades">
+          <p class="u-px">Esto mide <strong>16px</strong>: fijo, no cambia nunca.</p>
+          <p class="u-em">Esto mide <strong>1.4em</strong>: crece con el contenedor.</p>
+          <p class="u-rem">Esto mide <strong>1rem</strong>: depende de la raíz de la página.</p>
+        </div>
+
+        <p class="medidas" id="medidas">Calculando…</p>
+      </div>
+
+      <div class="tabla-caja">
+        <table class="tabla">
+          <thead><tr><th>Unidad</th><th>De quién depende</th><th>Cuándo usarla</th></tr></thead>
+          <tbody>
+            <tr><td><code>px</code></td><td>De nada: es fija</td><td>Bordes finos, sombras, detalles de 1–2 px</td></tr>
+            <tr><td><code>%</code></td><td>Del ancho del padre</td><td>Anchos, imágenes, columnas</td></tr>
+            <tr><td><code>rem</code></td><td>Del tamaño de letra de la raíz</td><td>Textos y espacios: respeta la configuración de la persona</td></tr>
+            <tr><td><code>em</code></td><td>Del elemento padre</td><td>Padding proporcional al texto</td></tr>
+            <tr><td><code>vw / vh</code></td><td>De la ventana (1 % de ancho o alto)</td><td>Secciones a pantalla completa</td></tr>
+            <tr><td><code>fr</code></td><td>Del espacio libre (solo en grid)</td><td>Repartir columnas</td></tr>
+            <tr><td><code>clamp(mín, ideal, máx)</code></td><td>De una fórmula</td><td>Títulos que crecen pero tienen límite</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <pre class="codigo"><code>/* título que se adapta sin media queries */
+h1 { font-size: clamp(1.6rem, 4vw + 1rem, 3rem); }
+
+/* un ancho cómodo de leer, en cualquier pantalla */
+p { max-width: 65ch; }</code></pre>
+    </section>
+
+    <!-- ================= 6. MAQUETADO ================= -->
+    <section class="bloque" id="maquetado">
+      <h2><span class="num">6</span> Que la maqueta se reordene sola</h2>
+      <p>
+        Con <strong>flexbox</strong> y <strong>grid</strong> no hay que calcular posiciones: se les dan
+        reglas y ellos reparten. Este es el patrón que resuelve el 90 % de los casos:
+      </p>
+
+      <div class="comparativa">
+        <div class="comparativa-caja">
+          <h3>Fila que se convierte en columna</h3>
+          <pre class="codigo"><code>.fila {
+  display: flex;
+  flex-wrap: wrap;   /* si no caben, bajan */
+  gap: 12px;
+}
+.fila > * { flex: 1 1 220px; }</code></pre>
+          <p class="nota">Sin media query: los hijos bajan solos cuando no caben. Ideal para botones y tarjetas.</p>
+        </div>
+
+        <div class="comparativa-caja">
+          <h3>Rejilla que cambia de columnas</h3>
+          <pre class="codigo"><code>.rejilla {
+  display: grid;
+  gap: 16px;
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+}</code></pre>
+          <p class="nota"><code>auto-fit</code> decide cuántas columnas caben. De 1 a 4, sin escribirlo.</p>
+        </div>
+      </div>
+
+      <p class="nota">
+        Consejo de orden: primero el flujo normal (todo en una columna), después <code>flex</code> para
+        filas, después <code>grid</code> para rejillas, y las media queries <strong>al final</strong>,
+        solo para lo que no se resuelve solo.
+      </p>
+    </section>
+
+    <!-- ================= 7. IMÁGENES ================= -->
+    <section class="bloque" id="imagenes">
+      <h2><span class="num">7</span> Imágenes y vídeos que no se desbordan</h2>
+      <p>
+        Una imagen de 600 píxeles dentro de un móvil de 360 se sale de la pantalla. Se arregla con una
+        regla de dos líneas. Mueve el mando y compara las dos cajas:
+      </p>
+
+      <div class="demo-imagenes">
+        <label class="mando">
+          <span class="mando-texto">Ancho disponible</span>
+          <input type="range" id="mandoImagen" min="180" max="520" step="10" value="320">
+        </label>
+
+        <div class="imagenes-par">
+          <figure class="imagen-caja">
+            <div class="imagen-marco sin-regla" id="marcoSin">
+              <img src="avatar.svg" alt="Flor sonriente de ejemplo" width="480" height="480">
+            </div>
+            <figcaption><strong>Sin regla:</strong> 480px fijos → se sale del marco.</figcaption>
+          </figure>
+
+          <figure class="imagen-caja">
+            <div class="imagen-marco" id="marcoCon">
+              <img class="fluida" src="avatar.svg" alt="La misma flor, ahora adaptándose" width="480" height="480">
+            </div>
+            <figcaption><strong>Con <code>max-width: 100%</code>:</strong> encoge y nunca se sale.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <pre class="codigo con-copiar"><code id="codigoImagenes">/* la regla que arregla el 90 % de los desbordes */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;      /* mantiene la proporción */
+  display: block;
+}
+
+/* y si quieres que llene su caja sin deformarse */
+img { object-fit: cover; }</code></pre>
+      <button class="copiar" data-copiar="codigoImagenes" type="button">📋 Copiar el CSS</button>
+    </section>
+
+    <!-- ================= 8. TOQUE ================= -->
+    <section class="bloque" id="toque">
+      <h2><span class="num">8</span> Dedos, no punteros</h2>
+      <p>
+        En un móvil no hay ratón: hay un dedo de unos 9 mm. Un enlace de 12 píxeles de alto es una
+        trampa. La recomendación general es que lo que se pulsa mida al menos
+        <strong>44 × 44 píxeles</strong> y esté separado de lo de al lado.
+      </p>
+
+      <div class="demo-toque">
+        <div class="fila-botones">
+          <button class="boton mini" type="button">Sí</button>
+          <button class="boton mini" type="button">No</button>
+          <button class="boton" type="button">Un botón cómodo</button>
+          <a class="enlace-mini" href="#toque">un enlace diminuto</a>
+        </div>
+
+        <button class="boton" id="botonZonas" aria-pressed="false" type="button">Mostrar zonas de toque</button>
+        <p class="nota" id="notaZonas">Pulsa el botón para ver el área real de cada elemento.</p>
+      </div>
+
+      <pre class="codigo"><code>/* objetivos cómodos para el dedo */
+button, a.boton {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px 18px;
+}
+
+/* no bases la información en :hover: en el móvil no existe */
+@media (hover: none) {
+  .tarjeta:hover { transform: none; }
+}</code></pre>
+    </section>
+
+    <!-- ================= 9. PROBAR ================= -->
+    <section class="bloque" id="probar">
+      <h2><span class="num">9</span> Cómo comprobarlo antes de publicar</h2>
+      <ol class="lista-numerada">
+        <li>
+          <strong>Modo dispositivo en el navegador.</strong> Con la web abierta pulsa <code>F12</code> y
+          el icono de móvil (<code>Ctrl + Shift + M</code>). Elige «iPhone SE» (375 px) y «iPhone
+          grande»: ahí se ven los fallos de verdad.
+        </li>
+        <li>
+          <strong>Prueba los extremos.</strong> 320 px (el móvil más estrecho que existe) y 1440 px.
+          Si aguanta los dos, aguanta todo lo de en medio.
+        </li>
+        <li>
+          <strong>Sin ratón.</strong> En el modo dispositivo, comprueba que todo lo importante se
+          alcanza con el dedo y que nada depende de <code>:hover</code>.
+        </li>
+        <li>
+          <strong>En un móvil de verdad.</strong> Lo mejor: publica la página y ábrela en tu teléfono.
+          Si estás en la misma wifi, algunos servidores locales te dejan entrar por la IP del
+          ordenador (<code>http://192.168.1.XX:8000</code>).
+        </li>
+        <li>
+          <strong>Gira la pantalla.</strong> Horizontal y vertical. Que nada se corte ni se solape.
+        </li>
+      </ol>
+
+      <div class="checklist-caja">
+        <h3>Antes de decir «está listo»</h3>
+        <ul class="checklist" id="checklist">
+          <li><label><input type="checkbox" data-paso="1"> El <code>&lt;head&gt;</code> tiene el <code>meta viewport</code></label></li>
+          <li><label><input type="checkbox" data-paso="2"> Ningún elemento se sale de la pantalla a 320 px</label></li>
+          <li><label><input type="checkbox" data-paso="3"> Las imágenes tienen <code>max-width: 100%</code></label></li>
+          <li><label><input type="checkbox" data-paso="4"> Las columnas se reorganizan (nada de anchos fijos grandes)</label></li>
+          <li><label><input type="checkbox" data-paso="5"> Lo que se pulsa mide al menos 44 × 44 px</label></li>
+          <li><label><input type="checkbox" data-paso="6"> Se lee sin hacer zoom y sin girar el móvil</label></li>
+          <li><label><input type="checkbox" data-paso="7"> Probado en móvil real o en modo dispositivo</label></li>
+        </ul>
+        <div class="barra"><span id="barraRelleno"></span></div>
+        <p class="progreso-texto" id="progresoTexto">0 de 7 comprobaciones</p>
+      </div>
+    </section>
+
+    <!-- ================= 10. ERRORES ================= -->
+    <section class="bloque" id="errores">
+      <h2><span class="num">10</span> Los cinco fallos que verás siempre</h2>
+      <div class="tabla-caja">
+        <table class="tabla">
+          <thead><tr><th>Síntoma en el móvil</th><th>Causa</th><th>Arreglo</th></tr></thead>
+          <tbody>
+            <tr><td>Todo diminuto, hay que hacer zoom</td><td>Falta el <code>meta viewport</code></td><td>Añadirlo en el <code>&lt;head&gt;</code></td></tr>
+            <tr><td>Aparece una barra horizontal y la página se mueve de lado</td><td>Algo tiene ancho fijo mayor que la pantalla</td><td><code>max-width: 100%</code>, anchos en <code>%</code> o <code>fr</code></td></tr>
+            <tr><td>El texto es enorme y se sale</td><td>Anchos en <code>px</code> y <code>white-space: nowrap</code></td><td>Quitar <code>nowrap</code>, usar <code>clamp()</code></td></tr>
+            <tr><td>Los botones no responden al dedo</td><td>Son demasiado pequeños o están pegados</td><td><code>min-height: 44px</code> y separación</td></tr>
+            <tr><td>El menú no se abre en el móvil</td><td>Solo hay <code>:hover</code></td><td>Un botón ☰ que cambie una clase con JavaScript</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= 11. CHULETA ================= -->
+    <section class="bloque" id="chuleta">
+      <h2><span class="num">11</span> Chuleta adaptable</h2>
+      <pre class="codigo con-copiar"><code id="codigoChuleta">/* 1. En el head, siempre */
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+
+/* 2. Que nada se salga */
+* { box-sizing: border-box; }
+img, video, iframe { max-width: 100%; height: auto; }
+
+/* 3. Base móvil, luego crece */
+.rejilla { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .rejilla { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 960px) { .rejilla { grid-template-columns: repeat(3, 1fr); } }
+
+/* 4. Texto que respira */
+h1 { font-size: clamp(1.6rem, 4vw + 1rem, 3rem); }
+p  { max-width: 65ch; }
+
+/* 5. Dedos cómodos */
+button, .boton { min-height: 44px; padding: 12px 18px; }
+
+/* 6. Respetar al sistema */
+@media (prefers-color-scheme: dark)  { :root { --fondo: #131a17; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }</code></pre>
+      <button class="copiar" data-copiar="codigoChuleta" type="button">📋 Copiar la chuleta</button>
+
+      <p class="cierre">
+        Con esto ya puedes coger cualquier página y hacerla funcionar en un celular y en un ordenador.
+        El siguiente paso natural: <strong>el proyecto completo</strong> (<code>index.html</code> +
+        <code>estilos.css</code> + <code>script.js</code>), con formulario, tarjetas y modo oscuro, y
+        su guía paso a paso.
+      </p>
+      <a class="boton" href="#inicio">Volver arriba</a>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    <p>© <span id="anio">2025</span> Diseño adaptable · HTML, CSS y JavaScript · funciona sin conexión</p>
+    <p class="pie-nota">Hecho con el mismo CSS que explica: media queries, grid y unidades relativas.</p>
+  </footer>
+
+  <div class="brindis" id="brindis" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
