@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diseño adaptable · Tu web en móvil, tableta y ordenador</title>
+  <meta name="description" content="Cómo hacer una página web con HTML, CSS y JavaScript que se vea bien en celulares y computadoras: explicación, demos interactivas y código.">
+  <style>
+/* =========================================================
+   Diseño adaptable · estilos
+   ---------------------------------------------------------
+   La propia hoja es un ejemplo de lo que explica:
+   unidades relativas, grid flexible y media queries.
+   ========================================================= */
+
+:root {
+  --fondo: #fbfaf7;
+  --papel: #ffffff;
+  --texto: #1f2a2e;
+  --tenue: #5f6f73;
+  --acento: #0f766e;
+  --acento-suave: #e3f2f0;
+  --secundario: #b45309;
+  --borde: #e4e1d8;
+  --codigo: #1b2429;
+  --codigo-texto: #e6eef0;
+  --radio: 16px;
+  --ancho: 1000px;
+  --sombra: 0 12px 32px rgba(31, 42, 46, .08);
+  --mono: "SF Mono", "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--texto);
+  background: var(--fondo);
+  overflow-x: hidden;             /* nada de scroll lateral accidental */
+}
+
+h1, h2, h3 { line-height: 1.25; margin: 0 0 .5em; }
+h1 { font-size: clamp(1.7rem, 4.4vw + .6rem, 2.9rem); letter-spacing: -.02em; }
+h2 { font-size: clamp(1.25rem, 1.6vw + .9rem, 1.6rem); }
+h3 { font-size: 1.02rem; }
+p { margin: 0 0 1em; max-width: 68ch; }
+
+a { color: var(--acento); }
+code {
+  font-family: var(--mono);
+  font-size: .88em;
+  background: var(--acento-suave);
+  color: #0b4f49;
+  padding: 1px 5px;
+  border-radius: 5px;
+}
+
+.solo-lectores {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible, label:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 3px;
+}
+
+/* ---------------- Botones ---------------- */
+.boton {
+  display: inline-block;
+  min-height: 44px;                    /* cómodo para el dedo */
+  padding: 11px 20px;
+  border: 1px solid var(--acento);
+  border-radius: 999px;
+  background: var(--acento);
+  color: #fff;
+  font: inherit; font-size: .95rem; font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter .15s, transform .12s;
+}
+.boton:hover { filter: brightness(1.08); text-decoration: none; }
+.boton:active { transform: scale(.97); }
+
+.boton.mini { min-height: 0; min-width: 0; padding: 2px 8px; font-size: .8rem; }
+.enlace-mini { font-size: .7rem; }
+
+.copiar {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  min-height: 40px;
+  border: 1px dashed var(--borde);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--tenue);
+  font: inherit; font-size: .82rem; font-weight: 700;
+  cursor: pointer;
+}
+.copiar:hover { color: var(--acento); border-color: var(--acento); }
+
+.fila-botones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0; }
+
+/* ---------------- Cabecera ---------------- */
+.cabecera {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 12px 18px;
+  background: var(--papel);
+  border-bottom: 1px solid var(--borde);
+}
+
+.logo { font-weight: 800; text-decoration: none; color: var(--texto); font-size: 1rem; }
+.logo:hover { text-decoration: none; }
+
+.nav { display: flex; align-items: center; gap: 14px; margin-left: auto; flex-wrap: wrap; }
+.nav a { color: var(--tenue); font-weight: 600; font-size: .9rem; text-decoration: none; }
+.nav a:hover { color: var(--acento); }
+
+.menu-boton {
+  display: none;
+  margin-left: auto;
+  min-height: 44px; min-width: 44px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: var(--papel);
+  color: var(--texto);
+  font-size: 1.2rem; line-height: 1; cursor: pointer;
+}
+
+/* ---------------- Portada ---------------- */
+.hero {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: clamp(28px, 6vw, 64px) 18px 32px;
+}
+.hero .etiqueta {
+  display: inline-block;
+  margin: 0 0 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--acento);
+  font-size: .76rem; font-weight: 800;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.entrada { font-size: 1.06rem; color: var(--tenue); max-width: 62ch; }
+h1 em { font-style: normal; color: var(--secundario); }
+
+.medidor {
+  margin-top: 22px;
+  padding: 16px 18px;
+  border: 1px solid var(--borde);
+  border-left: 6px solid var(--acento);
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: var(--sombra);
+  display: grid;
+  gap: 6px;
+}
+.medidor-dato { display: flex; align-items: baseline; gap: 8px; }
+.medidor-num {
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: var(--acento);
+  font-variant-numeric: tabular-nums;
+}
+.medidor-unidad { color: var(--tenue); font-size: .95rem; }
+.medidor-modo {
+  justify-self: start;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--acento);
+  font-weight: 800; font-size: .85rem;
+}
+.medidor-nota { margin: 4px 0 0; font-size: .86rem; color: var(--tenue); }
+
+/* ---------------- Bloques ---------------- */
+.bloque {
+  max-width: var(--ancho);
+  margin: 0 auto 22px;
+  padding: clamp(18px, 3vw, 30px);
+  background: var(--papel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  scroll-margin-top: 80px;
+}
+.bloque h2 { display: flex; align-items: center; gap: 12px; }
+.num {
+  flex: 0 0 auto;
+  display: grid; place-items: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--acento);
+  color: #fff;
+  font-size: .95rem; font-weight: 800;
+}
+
+.lista, .lista-numerada { margin: 0 0 1em; padding-left: 1.3em; max-width: 68ch; }
+.lista li, .lista-numerada li { margin-bottom: .5em; }
+.lista-numerada li { padding-left: .2em; }
+
+.nota { color: var(--tenue); font-size: .88rem; }
+.aviso-caja {
+  background: #fff6e8;
+  border: 1px solid #f0dcb8;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: .9rem;
+  max-width: 68ch;
+}
+.cierre { margin-top: 18px; }
+
+/* ---------------- Código ---------------- */
+.codigo {
+  margin: 10px 0 0;
+  padding: 14px 16px;
+  background: var(--codigo);
+  color: var(--codigo-texto);
+  border-radius: 12px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: .82rem;
+  line-height: 1.6;
+  white-space: pre;
+  tab-size: 2;
+}
+.codigo code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+/* ---------------- Pilares ---------------- */
+.pilares {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+.pilar {
+  padding: 16px;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  background: #fdfcfa;
+}
+.pilar h3 { color: var(--acento); font-size: .95rem; }
+
+/* ---------------- Simulador ---------------- */
+.simulador {
+  margin: 16px 0 8px;
+  padding: 14px;
+  border: 2px dashed var(--borde);
+  border-radius: 16px;
+  background: #fdfcfa;
+}
+.simulador-cab { display: grid; gap: 12px; }
+.fila-presets { display: flex; flex-wrap: wrap; gap: 8px; }
+.preset {
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: var(--papel);
+  color: var(--texto);
+  font: inherit; font-size: .85rem; font-weight: 700;
+  cursor: pointer;
+}
+.preset:hover { border-color: var(--acento); color: var(--acento); }
+.preset[aria-pressed="true"] {
+  background: var(--acento); border-color: var(--acento); color: #fff;
+}
+.preset.activo { background: var(--acento); border-color: var(--acento); color: #fff; }
+
+.mando { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.mando-texto { font-size: .85rem; font-weight: 700; color: var(--tenue); }
+.mando input[type="range"] {
+  flex: 1 1 200px;
+  min-width: 140px;
+  accent-color: var(--acento);
+  height: 28px;
+}
+
+.simulador-estado { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.pastilla {
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--acento);
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 700;
+}
+.pastilla.modo { background: #fef3c7; color: #92400e; }
+.pastilla.regla { background: #eef2f7; color: #35506b; }
+
+.marco-scroll {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+.marco {
+  width: 375px;                       /* lo cambia JavaScript */
+  max-width: none;
+  height: 400px;
+  border: 1px solid #d5d2c8;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(31, 42, 46, .12);
+  transition: width .12s linear;
+}
+.lienzo { display: block; width: 100%; height: 100%; border: 0; }
+
+/* ---------------- Comparativa ---------------- */
+.comparativa {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin: 14px 0;
+}
+.comparativa-caja {
+  padding: 16px;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  background: #fdfcfa;
+}
+.comparativa-caja h3 { font-size: .95rem; color: var(--acento); }
+
+/* ---------------- Demo: CSS real ---------------- */
+.demo-real {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid #cfe6d8;
+  border-radius: 14px;
+  background: #eef7f1;
+  transition: background .2s, border-color .2s;
+}
+.demo-real-icono::before { content: "🖥️"; font-size: 1.7rem; }
+.demo-real strong { display: block; font-size: .98rem; }
+.demo-real p { margin: 2px 0 0; font-size: .86rem; color: var(--tenue); max-width: 46ch; }
+
+@media (max-width: 639px) {
+  .demo-real { background: #fff4e5; border-color: #f0d9b5; }
+  .demo-real-icono::before { content: "📱"; }
+}
+@media (min-width: 640px) and (max-width: 899px) {
+  .demo-real { background: #eef2ff; border-color: #cfd8f5; }
+  .demo-real-icono::before { content: "📲"; }
+}
+
+/* ---------------- Demo: unidades ---------------- */
+.demo-unidades {
+  margin: 12px 0;
+  padding: 14px;
+  border: 2px dashed var(--borde);
+  border-radius: 14px;
+  background: #fdfcfa;
+}
+.unidades-caja { margin: 12px 0; font-size: 16px; }
+.unidades-caja p { margin: 0 0 8px; }
+.u-px { font-size: 16px; }
+.u-em { font-size: 1.4em; }
+.u-rem { font-size: 1rem; }
+.medidas {
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--tenue);
+  margin: 0;
+  background: var(--acento-suave);
+  border-radius: 8px;
+  padding: 8px 10px;
+  overflow-x: auto;
+}
+
+/* ---------------- Demo: imágenes ---------------- */
+.demo-imagenes {
+  margin: 12px 0;
+  padding: 14px;
+  border: 2px dashed var(--borde);
+  border-radius: 14px;
+  background: #fdfcfa;
+}
+.imagenes-par {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+.imagen-caja { margin: 0; }
+.imagen-marco {
+  width: 320px;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: #f1efea;
+  transition: width .12s linear;
+}
+.imagen-marco img { display: block; }
+.imagen-marco img.fluida { max-width: 100%; height: auto; }
+/* el caso malo: sin max-width, la imagen conserva su tamaño y se sale */
+.imagen-marco.sin-regla { overflow: visible; border-style: dashed; }
+.imagen-marco.sin-regla img { outline: 2px dashed #d94f8a; outline-offset: -2px; }
+figcaption { font-size: .8rem; color: var(--tenue); margin-top: 6px; }
+
+/* ---------------- Demo: toque ---------------- */
+.demo-toque {
+  margin: 12px 0;
+  padding: 14px;
+  border: 2px dashed var(--borde);
+  border-radius: 14px;
+  background: #fdfcfa;
+}
+.demo-toque.zonas button,
+.demo-toque.zonas a {
+  outline: 2px dashed #d94f8a;
+  outline-offset: 5px;
+}
+
+/* ---------------- Tablas ---------------- */
+.tabla-caja { overflow-x: auto; margin-top: 12px; }
+.tabla { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 480px; }
+.tabla th {
+  text-align: left; padding: 8px 10px;
+  border-bottom: 2px solid var(--borde);
+  font-size: .74rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--tenue);
+}
+.tabla td { padding: 9px 10px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+
+/* ---------------- Checklist ---------------- */
+.checklist-caja {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  background: #fdfcfa;
+}
+.checklist { list-style: none; margin: 10px 0; padding: 0; display: grid; gap: 8px; }
+.checklist label {
+  display: flex; gap: 10px; align-items: flex-start;
+  cursor: pointer; font-size: .92rem;
+  padding: 10px 12px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: var(--papel);
+}
+.checklist input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--acento); flex: 0 0 auto; }
+.checklist li.hecho label { background: var(--acento-suave); border-color: var(--acento); }
+
+.barra { height: 12px; border-radius: 999px; background: var(--borde); overflow: hidden; margin-top: 10px; }
+.barra span {
+  display: block; height: 100%; width: 0;
+  background: var(--acento);
+  border-radius: 999px;
+  transition: width .3s;
+}
+.progreso-texto { margin: 8px 0 0; font-size: .88rem; font-weight: 700; color: var(--tenue); }
+
+/* ---------------- Pie y aviso ---------------- */
+.pie {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 20px 18px 44px;
+  text-align: center;
+  color: var(--tenue);
+  font-size: .85rem;
+}
+.pie p { margin: 0 0 4px; }
+.pie-nota { font-size: .8rem; opacity: .85; }
+
+.brindis {
+  position: fixed;
+  left: 50%; bottom: 20px;
+  transform: translate(-50%, 150%);
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: var(--texto);
+  color: var(--fondo);
+  font-size: .85rem; font-weight: 700;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+  transition: transform .3s;
+  z-index: 60;
+  pointer-events: none;
+}
+.brindis.visible { transform: translate(-50%, 0); }
+
+/* ---------------- Responsive de esta misma página ---------------- */
+@media (max-width: 899px) {
+  .bloque { margin-left: 12px; margin-right: 12px; }
+}
+
+@media (max-width: 760px) {
+  .menu-boton { display: block; }
+  .nav {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    width: 100%;
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--borde);
+  }
+  .nav.abierto { display: flex; }
+  .nav a {
+    min-height: 44px;
+    display: flex; align-items: center;
+    padding: 6px 4px;
+  }
+  .bloque { scroll-margin-top: 120px; }
+  .medidor { padding: 14px; }
+  .marco { height: 360px; }
+}
+
+@media (max-width: 420px) {
+  body { font-size: .96rem; }
+  .bloque { padding: 16px 14px; }
+  .bloque h2 { gap: 9px; }
+  .num { width: 30px; height: 30px; font-size: .82rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+</style>
+</head>
+<body>
+
+  <!-- ================= CABECERA ================= -->
+  <header class="cabecera">
+    <a class="logo" href="#inicio">📐 <span>Diseño adaptable</span></a>
+
+    <button class="menu-boton" id="menuBoton" aria-expanded="false" aria-controls="nav">
+      <span aria-hidden="true">☰</span>
+      <span class="solo-lectores">Abrir menú</span>
+    </button>
+
+    <nav class="nav" id="nav">
+      <a href="#idea">La idea</a>
+      <a href="#simulador">Simulador</a>
+      <a href="#media-queries">Media queries</a>
+      <a href="#unidades">Unidades</a>
+      <a href="#imagenes">Imágenes</a>
+      <a href="#toque">Toque</a>
+      <a href="#probar">Probar</a>
+      <a href="#chuleta">Chuleta</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ================= PORTADA ================= -->
+    <section class="hero" id="inicio">
+      <p class="etiqueta">HTML + CSS + JavaScript · tutorial con demos</p>
+      <h1>Que tu web se vea bien en el móvil <em>y</em> en el ordenador</h1>
+      <p class="entrada">
+        Una misma página tiene que caber en una pantalla de 320 píxeles y aprovechar una de 1600.
+        Eso se llama <strong>diseño adaptable</strong> (responsive) y se hace con tres piezas: el
+        <code>meta viewport</code>, las <strong>media queries</strong> y un maquetado
+        <strong>flexible</strong>. Aquí lo ves explicado y funcionando.
+      </p>
+
+      <div class="medidor" aria-live="polite">
+        <div class="medidor-dato">
+          <span class="medidor-num" id="anchoReal">—</span>
+          <span class="medidor-unidad">px de ancho</span>
+        </div>
+        <div class="medidor-modo" id="modoReal">calculando…</div>
+        <p class="medidor-nota">Esto mide <strong>tu ventana ahora mismo</strong>. Estrecha el navegador (o gira el móvil) y mira cómo cambia.</p>
+      </div>
+    </section>
+
+    <!-- ================= 1. LA IDEA ================= -->
+    <section class="bloque" id="idea">
+      <h2><span class="num">1</span> La idea en tres piezas</h2>
+      <p>
+        El móvil no es «un ordenador pequeño»: es otra pantalla, con otro ancho, otro dedo y a veces
+        sin ratón. Para que la web funcione en las dos hay que dejar de pensar en píxeles fijos y
+        pensar en reglas.
+      </p>
+
+      <div class="pilares">
+        <article class="pilar">
+          <h3>1 · Que el móvil no haga zoom</h3>
+          <p>Una línea en el <code>&lt;head&gt;</code> le dice al móvil «usa el ancho real de la pantalla».</p>
+          <pre class="codigo"><code>&lt;meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0"&gt;</code></pre>
+        </article>
+
+        <article class="pilar">
+          <h3>2 · Que el CSS pregunte</h3>
+          <p>Las <strong>media queries</strong> aplican estilos solo si la pantalla mide más o menos de X.</p>
+          <pre class="codigo"><code>@media (min-width: 640px) {
+  .rejilla { grid-template-columns:
+             repeat(2, 1fr); }
+}</code></pre>
+        </article>
+
+        <article class="pilar">
+          <h3>3 · Que nada tenga ancho fijo</h3>
+          <p>Flecos, rejillas y textos en <code>%</code>, <code>rem</code> y <code>fr</code>: se adaptan solos.</p>
+          <pre class="codigo"><code>.rejilla {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+}</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= 2. SIMULADOR ================= -->
+    <section class="bloque" id="simulador">
+      <h2><span class="num">2</span> Simulador: la misma web en todos los tamaños</h2>
+      <p>
+        Aquí abajo hay <strong>una web de verdad dentro de un marco</strong>. Mueve el mando y cambia
+        su ancho: las media queries de dentro se disparan igual que en un móvil real. Mira la barra de
+        navegación, el número de columnas y el texto.
+      </p>
+
+      <div class="simulador">
+        <div class="simulador-cab">
+          <div class="fila-presets" role="group" aria-label="Tamaños de pantalla">
+            <button class="preset" data-ancho="375" type="button">📱 Móvil · 375</button>
+            <button class="preset" data-ancho="768" type="button">📲 Tableta · 768</button>
+            <button class="preset" data-ancho="1024" type="button">💻 Portátil · 1024</button>
+          </div>
+
+          <label class="mando">
+            <span class="mando-texto">Ancho de la pantalla</span>
+            <input type="range" id="mandoAncho" min="320" max="1024" step="1" value="375">
+          </label>
+        </div>
+
+        <div class="simulador-estado">
+          <span class="pastilla" id="pastillaAncho">375 px</span>
+          <span class="pastilla modo" id="pastillaModo">Móvil</span>
+          <span class="pastilla regla" id="pastillaRegla">@media (max-width: 620px)</span>
+        </div>
+
+        <div class="marco-scroll">
+          <div class="marco" id="marco">
+            <iframe id="lienzo" title="Web de ejemplo dentro del simulador" class="lienzo"></iframe>
+          </div>
+        </div>
+        <p class="nota">Si tu pantalla es más estrecha que el marco, arrastra el marco hacia un lado para verlo completo.</p>
+      </div>
+
+      <h3>El CSS que hace esto</h3>
+      <p>Tres media queries, una detrás de otra. Se leen de arriba abajo y gana la última que se cumpla:</p>
+      <pre class="codigo con-copiar"><code id="codigoSimulador">/* móvil: una columna, menú ☰ */
+@media (max-width: 620px) {
+  .rejilla { grid-template-columns: 1fr; }
+  .menu { display: none; }
+  .burger { display: block; }
+}
+
+/* tableta: dos columnas */
+@media (min-width: 621px) {
+  .rejilla { grid-template-columns: 1fr 1fr; }
+}
+
+/* escritorio: tres columnas y barra lateral */
+@media (min-width: 901px) {
+  .rejilla { grid-template-columns: repeat(3, 1fr); }
+  .lateral { display: block; }
+}</code></pre>
+      <button class="copiar" data-copiar="codigoSimulador" type="button">📋 Copiar el CSS</button>
+    </section>
+
+    <!-- ================= 3. VIEWPORT ================= -->
+    <section class="bloque" id="viewport">
+      <h2><span class="num">3</span> El <code>meta viewport</code>, sin él no hay nada</h2>
+      <p>
+        Si te olvidas de esta línea, el móvil simula una pantalla de 980 píxeles y encoge la web para
+        que quepa: se ve todo diminuto y las media queries nunca se cumplen. Es el error número uno.
+      </p>
+      <pre class="codigo"><code>&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;Mi web&lt;/title&gt;
+&lt;/head&gt;</code></pre>
+      <ul class="lista">
+        <li><code>width=device-width</code>: el ancho de la página es el ancho físico de la pantalla.</li>
+        <li><code>initial-scale=1.0</code>: sin zoom inicial. La persona puede hacer zoom con los dedos; no se lo quites.</li>
+      </ul>
+      <p class="aviso-caja">
+        ⚠️ Nunca uses <code>user-scalable=no</code> ni <code>maximum-scale=1</code>: impiden ampliar y
+        dejan la página inutilizable para quien ve poco.
+      </p>
+    </section>
+
+    <!-- ================= 4. MEDIA QUERIES ================= -->
+    <section class="bloque" id="media-queries">
+      <h2><span class="num">4</span> Media queries: el CSS que pregunta</h2>
+      <p>
+        Una media query es un <code>if</code> de CSS: «si la pantalla mide al menos 640 píxeles, aplica
+        esto». Hay dos formas de escribirla y conviene elegir una:
+      </p>
+
+      <div class="comparativa">
+        <div class="comparativa-caja">
+          <h3>Mobile-first (recomendado)</h3>
+          <p>Escribes primero el móvil, sin media query, y vas <strong>añadiendo</strong> con <code>min-width</code>.</p>
+          <pre class="codigo"><code>.rejilla { grid-template-columns: 1fr; }
+
+@media (min-width: 640px) {
+  .rejilla { grid-template-columns: 1fr 1fr; }
+}</code></pre>
+          <p class="nota">Menos CSS, más fácil de mantener: el caso complicado (pantalla pequeña) es el que se escribe primero.</p>
+        </div>
+
+        <div class="comparativa-caja">
+          <h3>Desktop-first</h3>
+          <p>Escribes primero el ordenador y luego <strong>deshaces</strong> con <code>max-width</code>.</p>
+          <pre class="codigo"><code>.rejilla { grid-template-columns: repeat(3, 1fr); }
+
+@media (max-width: 639px) {
+  .rejilla { grid-template-columns: 1fr; }
+}</code></pre>
+          <p class="nota">Vale si la web ya existía, pero acabas con más excepciones.</p>
+        </div>
+      </div>
+
+      <h3>Y aquí está pasando de verdad</h3>
+      <p>
+        Esta tarjeta no usa JavaScript para cambiar: es CSS puro leyendo el ancho <strong>real</strong>
+        de tu ventana. Redimensiona el navegador y verás cómo cambia de color y de icono.
+      </p>
+
+      <div class="demo-real" id="demoReal">
+        <span class="demo-real-icono" aria-hidden="true"></span>
+        <div>
+          <strong id="demoRealTitulo">Modo escritorio</strong>
+          <p id="demoRealTexto">Ancho de sobra: el contenido va a lo ancho y con aire.</p>
+        </div>
+      </div>
+
+      <p class="nota">
+        El texto lo escribe CSS con <code>content</code> según el ancho. En un móvil real verías el
+        modo móvil sin tocar nada.
+      </p>
+
+      <h3>Preguntas que se pueden hacer</h3>
+      <div class="tabla-caja">
+        <table class="tabla">
+          <thead><tr><th>Pregunta</th><th>Para qué sirve</th></tr></thead>
+          <tbody>
+            <tr><td><code>(min-width: 640px)</code></td><td>Pantalla al menos de 640 px de ancho.</td></tr>
+            <tr><td><code>(orientation: landscape)</code></td><td>Móvil en horizontal.</td></tr>
+            <tr><td><code>(hover: none)</code></td><td>No hay ratón: no abuses de los efectos al pasar por encima.</td></tr>
+            <tr><td><code>(prefers-color-scheme: dark)</code></td><td>La persona usa el modo oscuro del sistema.</td></tr>
+            <tr><td><code>(prefers-reduced-motion: reduce)</code></td><td>Pide menos animaciones.</td></tr>
+            <tr><td><code>(max-height: 500px)</code></td><td>Pantallas bajas (móvil tumbado).</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= 5. UNIDADES ================= -->
+    <section class="bloque" id="unidades">
+      <h2><span class="num">5</span> Deja de medir en píxeles fijos</h2>
+      <p>
+        El <code>px</code> no se entera de nada: si el contenedor crece, el texto sigue igual. Las
+        unidades relativas sí. Mueve el mando y compara los tres párrafos, que tienen el mismo texto
+        pero distinta unidad.
+      </p>
+
+      <div class="demo-unidades">
+        <label class="mando">
+          <span class="mando-texto">Tamaño base del contenedor</span>
+          <input type="range" id="mandoFuente" min="12" max="26" step="1" value="16">
+        </label>
+
+        <div class="unidades-caja" id="cajaUnidades">
+          <p class="u-px">Esto mide <strong>16px</strong>: fijo, no cambia nunca.</p>
+          <p class="u-em">Esto mide <strong>1.4em</strong>: crece con el contenedor.</p>
+          <p class="u-rem">Esto mide <strong>1rem</strong>: depende de la raíz de la página.</p>
+        </div>
+
+        <p class="medidas" id="medidas">Calculando…</p>
+      </div>
+
+      <div class="tabla-caja">
+        <table class="tabla">
+          <thead><tr><th>Unidad</th><th>De quién depende</th><th>Cuándo usarla</th></tr></thead>
+          <tbody>
+            <tr><td><code>px</code></td><td>De nada: es fija</td><td>Bordes finos, sombras, detalles de 1–2 px</td></tr>
+            <tr><td><code>%</code></td><td>Del ancho del padre</td><td>Anchos, imágenes, columnas</td></tr>
+            <tr><td><code>rem</code></td><td>Del tamaño de letra de la raíz</td><td>Textos y espacios: respeta la configuración de la persona</td></tr>
+            <tr><td><code>em</code></td><td>Del elemento padre</td><td>Padding proporcional al texto</td></tr>
+            <tr><td><code>vw / vh</code></td><td>De la ventana (1 % de ancho o alto)</td><td>Secciones a pantalla completa</td></tr>
+            <tr><td><code>fr</code></td><td>Del espacio libre (solo en grid)</td><td>Repartir columnas</td></tr>
+            <tr><td><code>clamp(mín, ideal, máx)</code></td><td>De una fórmula</td><td>Títulos que crecen pero tienen límite</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <pre class="codigo"><code>/* título que se adapta sin media queries */
+h1 { font-size: clamp(1.6rem, 4vw + 1rem, 3rem); }
+
+/* un ancho cómodo de leer, en cualquier pantalla */
+p { max-width: 65ch; }</code></pre>
+    </section>
+
+    <!-- ================= 6. MAQUETADO ================= -->
+    <section class="bloque" id="maquetado">
+      <h2><span class="num">6</span> Que la maqueta se reordene sola</h2>
+      <p>
+        Con <strong>flexbox</strong> y <strong>grid</strong> no hay que calcular posiciones: se les dan
+        reglas y ellos reparten. Este es el patrón que resuelve el 90 % de los casos:
+      </p>
+
+      <div class="comparativa">
+        <div class="comparativa-caja">
+          <h3>Fila que se convierte en columna</h3>
+          <pre class="codigo"><code>.fila {
+  display: flex;
+  flex-wrap: wrap;   /* si no caben, bajan */
+  gap: 12px;
+}
+.fila > * { flex: 1 1 220px; }</code></pre>
+          <p class="nota">Sin media query: los hijos bajan solos cuando no caben. Ideal para botones y tarjetas.</p>
+        </div>
+
+        <div class="comparativa-caja">
+          <h3>Rejilla que cambia de columnas</h3>
+          <pre class="codigo"><code>.rejilla {
+  display: grid;
+  gap: 16px;
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+}</code></pre>
+          <p class="nota"><code>auto-fit</code> decide cuántas columnas caben. De 1 a 4, sin escribirlo.</p>
+        </div>
+      </div>
+
+      <p class="nota">
+        Consejo de orden: primero el flujo normal (todo en una columna), después <code>flex</code> para
+        filas, después <code>grid</code> para rejillas, y las media queries <strong>al final</strong>,
+        solo para lo que no se resuelve solo.
+      </p>
+    </section>
+
+    <!-- ================= 7. IMÁGENES ================= -->
+    <section class="bloque" id="imagenes">
+      <h2><span class="num">7</span> Imágenes y vídeos que no se desbordan</h2>
+      <p>
+        Una imagen de 600 píxeles dentro de un móvil de 360 se sale de la pantalla. Se arregla con una
+        regla de dos líneas. Mueve el mando y compara las dos cajas:
+      </p>
+
+      <div class="demo-imagenes">
+        <label class="mando">
+          <span class="mando-texto">Ancho disponible</span>
+          <input type="range" id="mandoImagen" min="180" max="520" step="10" value="320">
+        </label>
+
+        <div class="imagenes-par">
+          <figure class="imagen-caja">
+            <div class="imagen-marco sin-regla" id="marcoSin">
+              <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJGbG9yIHNvbnJpZW50ZSI+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI5NiIgZmlsbD0iI2U3ZjRlYSIvPgogIDxnIGZpbGw9IiM4ZmQ2YTgiPgogICAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjUyIiByeD0iMjYiIHJ5PSIzMCIvPgogICAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjE0OCIgcng9IjI2IiByeT0iMzAiLz4KICAgIDxlbGxpcHNlIGN4PSI1MiIgY3k9IjEwMCIgcng9IjMwIiByeT0iMjYiLz4KICAgIDxlbGxpcHNlIGN4PSIxNDgiIGN5PSIxMDAiIHJ4PSIzMCIgcnk9IjI2Ii8+CiAgPC9nPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNDAiIGZpbGw9IiNmZmQ5NzciLz4KICA8Y2lyY2xlIGN4PSI4NiIgY3k9Ijk0IiByPSI1IiBmaWxsPSIjM2IzMjI2Ii8+CiAgPGNpcmNsZSBjeD0iMTE0IiBjeT0iOTQiIHI9IjUiIGZpbGw9IiMzYjMyMjYiLz4KICA8cGF0aCBkPSJNODQgMTEyIHExNiAxNCAzMiAwIiBzdHJva2U9IiMzYjMyMjYiIHN0cm9rZS13aWR0aD0iNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=" alt="Flor sonriente de ejemplo" width="480" height="480">
+            </div>
+            <figcaption><strong>Sin regla:</strong> 480px fijos → se sale del marco.</figcaption>
+          </figure>
+
+          <figure class="imagen-caja">
+            <div class="imagen-marco" id="marcoCon">
+              <img class="fluida" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJGbG9yIHNvbnJpZW50ZSI+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI5NiIgZmlsbD0iI2U3ZjRlYSIvPgogIDxnIGZpbGw9IiM4ZmQ2YTgiPgogICAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjUyIiByeD0iMjYiIHJ5PSIzMCIvPgogICAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjE0OCIgcng9IjI2IiByeT0iMzAiLz4KICAgIDxlbGxpcHNlIGN4PSI1MiIgY3k9IjEwMCIgcng9IjMwIiByeT0iMjYiLz4KICAgIDxlbGxpcHNlIGN4PSIxNDgiIGN5PSIxMDAiIHJ4PSIzMCIgcnk9IjI2Ii8+CiAgPC9nPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNDAiIGZpbGw9IiNmZmQ5NzciLz4KICA8Y2lyY2xlIGN4PSI4NiIgY3k9Ijk0IiByPSI1IiBmaWxsPSIjM2IzMjI2Ii8+CiAgPGNpcmNsZSBjeD0iMTE0IiBjeT0iOTQiIHI9IjUiIGZpbGw9IiMzYjMyMjYiLz4KICA8cGF0aCBkPSJNODQgMTEyIHExNiAxNCAzMiAwIiBzdHJva2U9IiMzYjMyMjYiIHN0cm9rZS13aWR0aD0iNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=" alt="La misma flor, ahora adaptándose" width="480" height="480">
+            </div>
+            <figcaption><strong>Con <code>max-width: 100%</code>:</strong> encoge y nunca se sale.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <pre class="codigo con-copiar"><code id="codigoImagenes">/* la regla que arregla el 90 % de los desbordes */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;      /* mantiene la proporción */
+  display: block;
+}
+
+/* y si quieres que llene su caja sin deformarse */
+img { object-fit: cover; }</code></pre>
+      <button class="copiar" data-copiar="codigoImagenes" type="button">📋 Copiar el CSS</button>
+    </section>
+
+    <!-- ================= 8. TOQUE ================= -->
+    <section class="bloque" id="toque">
+      <h2><span class="num">8</span> Dedos, no punteros</h2>
+      <p>
+        En un móvil no hay ratón: hay un dedo de unos 9 mm. Un enlace de 12 píxeles de alto es una
+        trampa. La recomendación general es que lo que se pulsa mida al menos
+        <strong>44 × 44 píxeles</strong> y esté separado de lo de al lado.
+      </p>
+
+      <div class="demo-toque">
+        <div class="fila-botones">
+          <button class="boton mini" type="button">Sí</button>
+          <button class="boton mini" type="button">No</button>
+          <button class="boton" type="button">Un botón cómodo</button>
+          <a class="enlace-mini" href="#toque">un enlace diminuto</a>
+        </div>
+
+        <button class="boton" id="botonZonas" aria-pressed="false" type="button">Mostrar zonas de toque</button>
+        <p class="nota" id="notaZonas">Pulsa el botón para ver el área real de cada elemento.</p>
+      </div>
+
+      <pre class="codigo"><code>/* objetivos cómodos para el dedo */
+button, a.boton {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px 18px;
+}
+
+/* no bases la información en :hover: en el móvil no existe */
+@media (hover: none) {
+  .tarjeta:hover { transform: none; }
+}</code></pre>
+    </section>
+
+    <!-- ================= 9. PROBAR ================= -->
+    <section class="bloque" id="probar">
+      <h2><span class="num">9</span> Cómo comprobarlo antes de publicar</h2>
+      <ol class="lista-numerada">
+        <li>
+          <strong>Modo dispositivo en el navegador.</strong> Con la web abierta pulsa <code>F12</code> y
+          el icono de móvil (<code>Ctrl + Shift + M</code>). Elige «iPhone SE» (375 px) y «iPhone
+          grande»: ahí se ven los fallos de verdad.
+        </li>
+        <li>
+          <strong>Prueba los extremos.</strong> 320 px (el móvil más estrecho que existe) y 1440 px.
+          Si aguanta los dos, aguanta todo lo de en medio.
+        </li>
+        <li>
+          <strong>Sin ratón.</strong> En el modo dispositivo, comprueba que todo lo importante se
+          alcanza con el dedo y que nada depende de <code>:hover</code>.
+        </li>
+        <li>
+          <strong>En un móvil de verdad.</strong> Lo mejor: publica la página y ábrela en tu teléfono.
+          Si estás en la misma wifi, algunos servidores locales te dejan entrar por la IP del
+          ordenador (<code>http://192.168.1.XX:8000</code>).
+        </li>
+        <li>
+          <strong>Gira la pantalla.</strong> Horizontal y vertical. Que nada se corte ni se solape.
+        </li>
+      </ol>
+
+      <div class="checklist-caja">
+        <h3>Antes de decir «está listo»</h3>
+        <ul class="checklist" id="checklist">
+          <li><label><input type="checkbox" data-paso="1"> El <code>&lt;head&gt;</code> tiene el <code>meta viewport</code></label></li>
+          <li><label><input type="checkbox" data-paso="2"> Ningún elemento se sale de la pantalla a 320 px</label></li>
+          <li><label><input type="checkbox" data-paso="3"> Las imágenes tienen <code>max-width: 100%</code></label></li>
+          <li><label><input type="checkbox" data-paso="4"> Las columnas se reorganizan (nada de anchos fijos grandes)</label></li>
+          <li><label><input type="checkbox" data-paso="5"> Lo que se pulsa mide al menos 44 × 44 px</label></li>
+          <li><label><input type="checkbox" data-paso="6"> Se lee sin hacer zoom y sin girar el móvil</label></li>
+          <li><label><input type="checkbox" data-paso="7"> Probado en móvil real o en modo dispositivo</label></li>
+        </ul>
+        <div class="barra"><span id="barraRelleno"></span></div>
+        <p class="progreso-texto" id="progresoTexto">0 de 7 comprobaciones</p>
+      </div>
+    </section>
+
+    <!-- ================= 10. ERRORES ================= -->
+    <section class="bloque" id="errores">
+      <h2><span class="num">10</span> Los cinco fallos que verás siempre</h2>
+      <div class="tabla-caja">
+        <table class="tabla">
+          <thead><tr><th>Síntoma en el móvil</th><th>Causa</th><th>Arreglo</th></tr></thead>
+          <tbody>
+            <tr><td>Todo diminuto, hay que hacer zoom</td><td>Falta el <code>meta viewport</code></td><td>Añadirlo en el <code>&lt;head&gt;</code></td></tr>
+            <tr><td>Aparece una barra horizontal y la página se mueve de lado</td><td>Algo tiene ancho fijo mayor que la pantalla</td><td><code>max-width: 100%</code>, anchos en <code>%</code> o <code>fr</code></td></tr>
+            <tr><td>El texto es enorme y se sale</td><td>Anchos en <code>px</code> y <code>white-space: nowrap</code></td><td>Quitar <code>nowrap</code>, usar <code>clamp()</code></td></tr>
+            <tr><td>Los botones no responden al dedo</td><td>Son demasiado pequeños o están pegados</td><td><code>min-height: 44px</code> y separación</td></tr>
+            <tr><td>El menú no se abre en el móvil</td><td>Solo hay <code>:hover</code></td><td>Un botón ☰ que cambie una clase con JavaScript</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= 11. CHULETA ================= -->
+    <section class="bloque" id="chuleta">
+      <h2><span class="num">11</span> Chuleta adaptable</h2>
+      <pre class="codigo con-copiar"><code id="codigoChuleta">/* 1. En el head, siempre */
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+
+/* 2. Que nada se salga */
+* { box-sizing: border-box; }
+img, video, iframe { max-width: 100%; height: auto; }
+
+/* 3. Base móvil, luego crece */
+.rejilla { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .rejilla { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 960px) { .rejilla { grid-template-columns: repeat(3, 1fr); } }
+
+/* 4. Texto que respira */
+h1 { font-size: clamp(1.6rem, 4vw + 1rem, 3rem); }
+p  { max-width: 65ch; }
+
+/* 5. Dedos cómodos */
+button, .boton { min-height: 44px; padding: 12px 18px; }
+
+/* 6. Respetar al sistema */
+@media (prefers-color-scheme: dark)  { :root { --fondo: #131a17; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }</code></pre>
+      <button class="copiar" data-copiar="codigoChuleta" type="button">📋 Copiar la chuleta</button>
+
+      <p class="cierre">
+        Con esto ya puedes coger cualquier página y hacerla funcionar en un celular y en un ordenador.
+        El siguiente paso natural: <strong>el proyecto completo</strong> (<code>index.html</code> +
+        <code>estilos.css</code> + <code>script.js</code>), con formulario, tarjetas y modo oscuro, y
+        su guía paso a paso.
+      </p>
+      <a class="boton" href="#inicio">Volver arriba</a>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    <p>© <span id="anio">2025</span> Diseño adaptable · HTML, CSS y JavaScript · funciona sin conexión</p>
+    <p class="pie-nota">Hecho con el mismo CSS que explica: media queries, grid y unidades relativas.</p>
+  </footer>
+
+  <div class="brindis" id="brindis" role="status" aria-live="polite"></div>
+
+  <script>
+/* =========================================================
+   Diseño adaptable · script.js
+   ---------------------------------------------------------
+   1. Año del pie
+   2. Menú del móvil
+   3. El medidor: el ancho real de tu ventana
+   4. Simulador de pantallas (la web de dentro es de verdad)
+   5. Demo de unidades (px / em / rem)
+   6. Demo de imágenes flexibles
+   7. Demo de zonas de toque
+   8. Checklist con progreso
+   9. Copiar código
+   ========================================================= */
+"use strict";
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+const CLAVE_PASOS = "adaptable-pasos";
+
+let temporizadorBrindis = null;
+function brindis(texto) {
+  const caja = $("#brindis");
+  if (!caja) return;
+  caja.textContent = texto;
+  caja.classList.add("visible");
+  clearTimeout(temporizadorBrindis);
+  temporizadorBrindis = setTimeout(() => caja.classList.remove("visible"), 2200);
+}
+
+/* ---------- 1. Año ---------- */
+const anio = $("#anio");
+if (anio) anio.textContent = new Date().getFullYear();
+
+/* ---------- 2. Menú del móvil ---------- */
+const botonMenu = $("#menuBoton");
+const nav = $("#nav");
+if (botonMenu && nav) {
+  botonMenu.addEventListener("click", () => {
+    const abierto = nav.classList.toggle("abierto");
+    botonMenu.setAttribute("aria-expanded", abierto ? "true" : "false");
+  });
+  $$("#nav a").forEach((enlace) => {
+    enlace.addEventListener("click", () => {
+      nav.classList.remove("abierto");
+      botonMenu.setAttribute("aria-expanded", "false");
+    });
+  });
+}
+
+/* ---------- 3. El medidor real ---------- */
+const MODOS = [
+  { modo: "Móvil", icono: "📱", desde: 0, hasta: 639 },
+  { modo: "Tableta", icono: "📲", desde: 640, hasta: 899 },
+  { modo: "Escritorio", icono: "🖥️", desde: 900, hasta: 100000 }
+];
+
+function modoSegunAncho(ancho) {
+  for (let i = 0; i < MODOS.length; i++) {
+    if (ancho >= MODOS[i].desde && ancho <= MODOS[i].hasta) return MODOS[i];
+  }
+  return MODOS[MODOS.length - 1];
+}
+
+const TEXTOS_MODO = {
+  "Móvil": "Una columna, menú ☰ y textos algo más pequeños.",
+  "Tableta": "Dos columnas: ya hay sitio para repartir.",
+  "Escritorio": "Ancho de sobra: tres columnas, barra lateral y aire."
+};
+
+const anchoReal = $("#anchoReal");
+const modoReal = $("#modoReal");
+const demoRealTitulo = $("#demoRealTitulo");
+const demoRealTexto = $("#demoRealTexto");
+
+function medirVentana() {
+  const ancho = window.innerWidth;
+  const info = modoSegunAncho(ancho);
+  if (anchoReal) anchoReal.textContent = ancho;
+  if (modoReal) modoReal.textContent = info.icono + " " + info.modo;
+  if (demoRealTitulo) demoRealTitulo.textContent = "Modo " + info.modo.toLowerCase();
+  if (demoRealTexto) demoRealTexto.textContent = TEXTOS_MODO[info.modo];
+}
+
+medirVentana();
+window.addEventListener("resize", medirVentana);
+window.addEventListener("orientationchange", medirVentana);
+
+/* ---------- 4. Simulador de pantallas ---------- */
+/* Esta es la web que vive dentro del marco. Sus media queries responden al
+   tamaño del marco, igual que responderían al de un móvil de verdad. */
+const WEB_DEMO = [
+  '<!DOCTYPE html>',
+  '<html lang="es"><head><meta charset="utf-8">',
+  '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+  '<style>',
+  '  * { box-sizing: border-box; }',
+  '  html, body { margin: 0; }',
+  '  body { font-family: "Segoe UI", system-ui, sans-serif; color: #1f2a2e; background: #ffffff; font-size: 13px; line-height: 1.5; }',
+  '  .barra { display: flex; align-items: center; gap: 10px; padding: 10px 12px;',
+  '           background: #0f766e; color: #fff; }',
+  '  .barra .marca { font-weight: 800; font-size: 13px; }',
+  '  .barra .menu { margin-left: auto; display: flex; gap: 12px; font-size: 11px; }',
+  '  .barra .burger { margin-left: auto; font-size: 15px; display: none; }',
+  '  .contenido { padding: 12px; }',
+  '  h2 { font-size: 14px; margin: 0 0 8px; }',
+  '  .rejilla { display: grid; gap: 10px; grid-template-columns: 1fr; }',
+  '  .tarjeta { border: 1px solid #e4e1d8; border-radius: 10px; padding: 10px; background: #fdfcfa; }',
+  '  .tarjeta h3 { margin: 0 0 4px; font-size: 12px; }',
+  '  .tarjeta p { margin: 0; font-size: 10.5px; color: #5f6f73; }',
+  '  .lateral { display: none; border: 1px dashed #d8d4c8; border-radius: 10px; padding: 10px;',
+  '             font-size: 10.5px; color: #5f6f73; background: #faf9f6; }',
+  '',
+  '  /* ---------- MÓVIL ---------- */',
+  '  @media (max-width: 620px) {',
+  '    .menu { display: none; }',
+  '    .burger { display: block; }',
+  '  }',
+  '',
+  '  /* ---------- TABLETA ---------- */',
+  '  @media (min-width: 621px) {',
+  '    .rejilla { grid-template-columns: 1fr 1fr; }',
+  '    .contenido { padding: 16px; }',
+  '    h2 { font-size: 15px; }',
+  '  }',
+  '',
+  '  /* ---------- ESCRITORIO ---------- */',
+  '  @media (min-width: 901px) {',
+  '    .contenido { display: grid; grid-template-columns: 1fr 190px; gap: 14px; padding: 20px; }',
+  '    .rejilla { grid-template-columns: repeat(3, 1fr); }',
+  '    .lateral { display: block; }',
+  '    h2 { font-size: 17px; }',
+  '    body { font-size: 14px; }',
+  '  }',
+  '</style></head><body>',
+  '  <div class="barra">',
+  '    <span class="marca">Mi sitio</span>',
+  '    <span class="menu"><span>Inicio</span><span>Blog</span><span>Contacto</span></span>',
+  '    <span class="burger">☰</span>',
+  '  </div>',
+  '  <div class="contenido">',
+  '    <div>',
+  '      <h2>Artículos</h2>',
+  '      <div class="rejilla">',
+  '        <article class="tarjeta"><h3>Primero</h3><p>Una tarjeta que se recoloca.</p></article>',
+  '        <article class="tarjeta"><h3>Segundo</h3><p>Cabecera con menú o con ☰.</p></article>',
+  '        <article class="tarjeta"><h3>Tercero</h3><p>Texto y aire según el ancho.</p></article>',
+  '        <article class="tarjeta"><h3>Cuarto</h3><p>Nada de anchos fijos.</p></article>',
+  '      </div>',
+  '    </div>',
+  '    <aside class="lateral">Barra lateral: aparece solo en pantallas grandes.</aside>',
+  '  </div>',
+  '</body></html>'
+].join("\n");
+
+const lienzo = $("#lienzo");
+const marco = $("#marco");
+const mandoAncho = $("#mandoAncho");
+const pastillaAncho = $("#pastillaAncho");
+const pastillaModo = $("#pastillaModo");
+const pastillaRegla = $("#pastillaRegla");
+const presets = $$(".preset");
+
+if (lienzo) lienzo.setAttribute("srcdoc", WEB_DEMO);
+
+function pintarSimulador(ancho) {
+  if (marco) marco.style.width = ancho + "px";
+  if (mandoAncho && String(mandoAncho.value) !== String(ancho)) mandoAncho.value = ancho;
+
+  const info = modoSegunAncho(ancho);
+  if (pastillaAncho) pastillaAncho.textContent = ancho + " px";
+  if (pastillaModo) pastillaModo.textContent = info.icono + " " + info.modo;
+
+  let regla = "@media (min-width: 901px)  · tres columnas";
+  if (ancho <= 620) regla = "@media (max-width: 620px)  · una columna";
+  else if (ancho <= 900) regla = "@media (min-width: 621px)  · dos columnas";
+  if (pastillaRegla) pastillaRegla.textContent = regla;
+
+  presets.forEach((boton) => {
+    const suyo = Number(boton.getAttribute("data-ancho"));
+    boton.classList.toggle("activo", suyo === ancho);
+    boton.setAttribute("aria-pressed", suyo === ancho ? "true" : "false");
+  });
+}
+
+if (mandoAncho) {
+  mandoAncho.addEventListener("input", () => pintarSimulador(Number(mandoAncho.value)));
+}
+
+presets.forEach((boton) => {
+  boton.addEventListener("click", () => {
+    const ancho = Number(boton.getAttribute("data-ancho"));
+    pintarSimulador(ancho);
+    if (ancho === 375) brindis("375 px: como un iPhone en vertical");
+    if (ancho === 768) brindis("768 px: tableta en vertical");
+    if (ancho === 1024) brindis("1024 px: portátil");
+  });
+});
+
+/* ancho inicial: el más parecido a la pantalla de quien mira */
+pintarSimulador(window.innerWidth <= 480 ? 375 : (window.innerWidth <= 900 ? 768 : 375));
+
+/* ---------- 5. Demo de unidades ---------- */
+const mandoFuente = $("#mandoFuente");
+const cajaUnidades = $("#cajaUnidades");
+const medidas = $("#medidas");
+
+function medirUnidades() {
+  if (!cajaUnidades || !medidas) return;
+  const px = parseFloat(window.getComputedStyle($(".u-px")).fontSize).toFixed(1);
+  const em = parseFloat(window.getComputedStyle($(".u-em")).fontSize).toFixed(1);
+  const rem = parseFloat(window.getComputedStyle($(".u-rem")).fontSize).toFixed(1);
+  medidas.textContent = "Calculado por el navegador →  16px: " + px + "px   ·   1.4em: " + em +
+    "px   ·   1rem: " + rem + "px";
+}
+
+if (mandoFuente && cajaUnidades) {
+  mandoFuente.addEventListener("input", () => {
+    cajaUnidades.style.fontSize = mandoFuente.value + "px";
+    medirUnidades();
+  });
+}
+medirUnidades();
+
+/* ---------- 6. Demo de imágenes ---------- */
+const mandoImagen = $("#mandoImagen");
+const marcoSin = $("#marcoSin");
+const marcoCon = $("#marcoCon");
+
+if (mandoImagen) {
+  mandoImagen.addEventListener("input", () => {
+    const ancho = mandoImagen.value + "px";
+    if (marcoSin) marcoSin.style.width = ancho;
+    if (marcoCon) marcoCon.style.width = ancho;
+  });
+}
+
+/* ---------- 7. Demo de zonas de toque ---------- */
+const botonZonas = $("#botonZonas");
+const demoToque = $(".demo-toque");
+const notaZonas = $("#notaZonas");
+
+if (botonZonas && demoToque) {
+  botonZonas.addEventListener("click", () => {
+    const activo = demoToque.classList.toggle("zonas");
+    botonZonas.setAttribute("aria-pressed", activo ? "true" : "false");
+    botonZonas.textContent = activo ? "Ocultar zonas de toque" : "Mostrar zonas de toque";
+    if (notaZonas) {
+      notaZonas.textContent = activo
+        ? "Las líneas de puntos marcan lo que el dedo tiene que acertar. «Sí» y «No» son demasiado pequeños; el enlace, también."
+        : "Pulsa el botón para ver el área real de cada elemento.";
+    }
+  });
+}
+
+/* ---------- 8. Checklist con progreso ---------- */
+const casillas = $$('#checklist input[type="checkbox"]');
+const barraRelleno = $("#barraRelleno");
+const progresoTexto = $("#progresoTexto");
+
+function leerPasos() {
+  try { return JSON.parse(localStorage.getItem(CLAVE_PASOS) || "{}"); }
+  catch (e) { return {}; }
+}
+
+function pintarProgreso() {
+  const hechas = casillas.filter((c) => c.checked).length;
+  if (barraRelleno) barraRelleno.style.width = (casillas.length ? (hechas / casillas.length) * 100 : 0) + "%";
+  if (progresoTexto) {
+    progresoTexto.textContent = hechas + " de " + casillas.length + " comprobaciones" +
+      (hechas === casillas.length && casillas.length ? " ✅ lista para publicar" : "");
+  }
+  casillas.forEach((c) => {
+    const li = c.closest("li");
+    if (li) li.classList.toggle("hecho", c.checked);
+  });
+}
+
+const pasosGuardados = leerPasos();
+casillas.forEach((casilla) => {
+  const paso = casilla.getAttribute("data-paso");
+  if (pasosGuardados[paso]) casilla.checked = true;
+  casilla.addEventListener("change", () => {
+    const mapa = leerPasos();
+    if (casilla.checked) mapa[paso] = true;
+    else delete mapa[paso];
+    try { localStorage.setItem(CLAVE_PASOS, JSON.stringify(mapa)); } catch (e) {}
+    pintarProgreso();
+  });
+});
+pintarProgreso();
+
+/* ---------- 9. Copiar código ---------- */
+$$(".copiar").forEach((boton) => {
+  boton.addEventListener("click", () => {
+    const destino = document.getElementById(boton.getAttribute("data-copiar"));
+    if (!destino) return;
+    const texto = destino.textContent;
+
+    const listo = () => brindis("Código copiado ✓");
+    const aMano = () => brindis("No se pudo copiar: selecciónalo a mano");
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto).then(listo).catch(aMano);
+      return;
+    }
+    try {
+      const area = document.createElement("textarea");
+      area.value = texto;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+      listo();
+    } catch (e) {
+      aMano();
+    }
+  });
+});
+
+</script>
+</body>
+</html>
